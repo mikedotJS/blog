@@ -1,16 +1,24 @@
+import { ChakraProvider } from "@chakra-ui/react";
+import { Refine } from "@refinedev/core";
+import dataProvider, { axiosInstance } from "@refinedev/simple-rest";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ChakraProvider } from "@chakra-ui/react";
+
+import PostCreate from "./routes/admin/post-create";
+import PostList from "./routes/admin/post-list";
+import Blog from "./routes/blog";
+import PostView from "./routes/post-view";
 import Root from "./routes/root";
-import PostList from "./routes/post-list";
-import { Refine } from "@refinedev/core";
-import dataProvider, { axiosInstance } from "@refinedev/simple-rest";
-import PostCreate from "./routes/post-create";
 
 const API_URL = "http://localhost:3000/api";
 
 const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Blog />,
+  },
+  { path: "/posts/:id", element: <PostView /> },
   {
     path: "/admin",
     element: <Root />,

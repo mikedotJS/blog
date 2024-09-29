@@ -31,7 +31,7 @@ export default function Root() {
             CATEGORIES
           </Text>
           <Stack>
-            <Link>Posts</Link>
+            <Link href="/admin/posts">Posts</Link>
           </Stack>
         </Container>
       </Stack>

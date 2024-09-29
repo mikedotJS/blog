@@ -1,17 +1,40 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { db } from "./config/db";
-import { env } from "./config";
-import { type DeleteResult, ObjectId, type InsertOneResult } from "mongodb";
 import { bearerAuth } from "hono/bearer-auth";
-import { logger } from "hono/logger";
 import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { type DeleteResult, type InsertOneResult, ObjectId } from "mongodb";
 import type { Post } from "shared";
 
+import { env } from "./config";
+import { db } from "./config/db";
+
 const app = new Hono();
+
 app.use(cors({ origin: "http://localhost:5173" }));
 
 app.use(logger());
+
+app.get("/api/posts/:id", async (c) => {
+	try {
+		const postId = c.req.param("id");
+		const orm = await db.use<Post>(env.DB_NAME, "posts");
+
+		const post = await orm(
+			async (collection) =>
+				await collection.findOne({ _id: new ObjectId(postId) }),
+		);
+
+		if (!post) {
+			return c.json({ error: "Post not found" }, 404);
+		}
+
+		return c.json(post);
+	} catch (error) {
+		console.error("Error fetching post:", error);
+		return c.json({ error: "Failed to fetch post" }, 500);
+	}
+});
 
 app.get("/api/posts", async (c) => {
 	try {

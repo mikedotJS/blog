@@ -1,6 +1,6 @@
 import { type Collection, MongoClient, ServerApiVersion } from "mongodb";
-import type { IPost } from "../models";
 import { env } from ".";
+import type { IPost } from "../models";
 
 const dbPassword = env.DB_PASSWORD || "";
 const uri = `mongodb+srv://mchlrmn:${dbPassword}@cluster0.pf2zb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
