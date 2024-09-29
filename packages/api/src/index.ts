@@ -11,7 +11,7 @@ const app = new Hono();
 
 app.use(logger());
 
-app.get("/posts", async (c) => {
+app.get("/api/posts", async (c) => {
 	try {
 		const orm = await db.use<IPost[]>(env.DB_NAME, "posts");
 
@@ -26,13 +26,18 @@ app.get("/posts", async (c) => {
 	}
 });
 
-app.post("/posts", bearerAuth({ token: env.TOKEN }), async (c) => {
+app.post("/api/posts", bearerAuth({ token: env.TOKEN }), async (c) => {
 	try {
-		const newPost = await c.req.json();
+		const body = await c.req.json();
 		const orm = await db.use<InsertOneResult<IPost>>(env.DB_NAME, "posts");
 
+		const post = {
+			...body,
+			createdAt: new Date(),
+		};
+
 		const result = await orm(
-			async (collection) => await collection.insertOne(newPost),
+			async (collection) => await collection.insertOne(post),
 		);
 
 		return c.json(result);
